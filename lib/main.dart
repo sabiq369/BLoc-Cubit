@@ -20,7 +20,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+        create: (context) => CounterBloc(),
+        child: MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }
@@ -28,7 +31,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({super.key, required this.title});
   final String title;
-  final CounterBloc counterBloc = CounterBloc();
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -44,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: BlocBuilder<CounterBloc, CounterState>(
-          bloc: widget.counterBloc,
           builder: (context, state) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -65,12 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           FloatingActionButton(
-            onPressed: () => widget.counterBloc.add(CounterIncrementEvent()),
+            onPressed: () =>
+                context.read<CounterBloc>().add(CounterIncrementEvent()),
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
           FloatingActionButton(
-            onPressed: () => widget.counterBloc.add(CounterDecrementEvent()),
+            onPressed: () =>
+                context.read<CounterBloc>().add(CounterDecrementEvent()),
             tooltip: 'Decrement',
             child: const Icon(Icons.minimize),
           ),
