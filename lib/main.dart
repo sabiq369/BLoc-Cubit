@@ -1,6 +1,9 @@
 import 'package:bloc_cubit/bloc/counter_bloc.dart';
 import 'package:bloc_cubit/bloc/counter_event.dart';
 import 'package:bloc_cubit/bloc/counter_state.dart';
+import 'package:bloc_cubit/visibility/bloc/visibility_bloc.dart';
+import 'package:bloc_cubit/visibility/bloc/visibility_event.dart';
+import 'package:bloc_cubit/visibility/bloc/visibility_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,8 +23,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BlocProvider(
-        create: (context) => CounterBloc(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => CounterBloc(),
+          ),
+          BlocProvider(
+            create: (context) => VisibilityBloc(),
+          ),
+        ],
         child: MyHomePage(title: 'Flutter Demo Home Page'),
       ),
     );
@@ -57,6 +67,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   state.count.toString(),
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
+                BlocBuilder<VisibilityBloc, VisibilityState>(
+                  builder: (context, state) {
+                    return Visibility(
+                        visible: state.show,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.purple,
+                        ));
+                  },
+                )
               ],
             );
           },
@@ -76,6 +97,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 context.read<CounterBloc>().add(CounterDecrementEvent()),
             tooltip: 'Decrement',
             child: const Icon(Icons.minimize),
+          ),
+          FloatingActionButton(
+            onPressed: () =>
+                context.read<VisibilityBloc>().add(VisibilityShow()),
+            child: const Text('Show'),
+          ),
+          FloatingActionButton(
+            onPressed: () =>
+                context.read<VisibilityBloc>().add(VisibilityHide()),
+            child: const Text('Hide'),
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
