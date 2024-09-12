@@ -55,42 +55,48 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: BlocBuilder<CounterBloc, CounterState>(
-          builder: (context, state) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'You have pushed the button this many times:',
-                ),
-                Text(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            BlocConsumer<CounterBloc, CounterState>(
+              listener: (context, state) {
+                if (state.count == 3) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Counter value is ${state.count}')));
+                }
+              },
+              builder: (context, state) {
+                return Text(
                   state.count.toString(),
                   style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                BlocBuilder<VisibilityBloc, VisibilityState>(
-                  builder: (context, state) {
-                    return Visibility(
-                        visible: state.show,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.purple,
-                        ));
-                  },
-                ),
-                BlocListener<CounterBloc, CounterState>(
-                  listenWhen: (previous, current) => true,
-                  listener: (context, state) {
-                    if (state.count == 3) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Counter value is ${state.count}')));
-                    }
-                  },
-                  child: Text("You can't make child null"),
-                )
-              ],
-            );
-          },
+                );
+              },
+            ),
+            BlocBuilder<VisibilityBloc, VisibilityState>(
+              builder: (context, state) {
+                return Visibility(
+                    visible: state.show,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.purple,
+                    ));
+              },
+            ),
+            BlocListener<CounterBloc, CounterState>(
+              listenWhen: (previous, current) => true,
+              listener: (context, state) {
+                if (state.count == 3) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Counter value is ${state.count}')));
+                }
+              },
+              child: Text("You can't make child null"),
+            ),
+          ],
         ),
       ),
       floatingActionButton: Row(
