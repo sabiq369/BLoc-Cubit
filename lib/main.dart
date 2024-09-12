@@ -77,6 +77,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.purple,
                         ));
                   },
+                ),
+                BlocListener<CounterBloc, CounterState>(
+                  listenWhen: (previous, current) => true,
+                  listener: (context, state) {
+                    if (state.count == 3) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Counter value is ${state.count}')));
+                    }
+                  },
+                  child: Text("You can't make child null"),
                 )
               ],
             );
